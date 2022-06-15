@@ -3,7 +3,7 @@
 # Steps to perform before running the script
 # generate ssh key "ssh-keygen" in your system
 # export the ssh public key to the github account and paste it. (githubaccount -> settings -> SSH and GPG keys)
-# Download inataller dev_installer.tar.gz
+# Download installer dev_installer.tar.gz
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew update
