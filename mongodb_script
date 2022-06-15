@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Steps to perform before running the script
+# generate ssh key "ssh-keygen" in your system
+# export the ssh public key to the github account and paste it. (githubaccount -> settings -> SSH and GPG keys)
+# Download inataller dev_installer.tar.gz
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew update
+brew install apr c-ares gd jemalloc libffi libsodium redis memcached openldap python@3.9 tidy-html5 zookeeper apr-util ca-certificates gdbm jpeg libidn2 libssh2 nghttp2 openssl@1.1 readline unixodbc zstd argon2 curl gettext kafka libmemcached libtiff nginx pcre rtmpdump webp aspell fontconfig glib krb5 libmetalink libtool nvm pcre2 sqlite wget autoconf freetds gmp libev libpng libunistring oniguruma php@7.4 tcl-tk xz brotli freetype icu4c libevent libpq libzip openjdk pkg-config telnet zlib pecl
+git clone git@github.com:trackier/webapp.git
+ 
+# setting command path 
+echo "export PATH='/opt/homebrew/opt/php@7.4/bin:/opt/homebrew/opt/php@7.4/sbin:$PATH'" >> ~/.zshrc
+
+# creating and setting alias to start and connect mongodb
+echo "alias start:mongodb:rs0='/Users/$(whoami)/_INSTALL/mongo-rs/init.sh'" >> ~/.zshrc
+echo "alias connect:mongodb:rs0='/Users/$(whoami)/_INSTALL/mongo-rs/bin/mongo "mongodb://127.0.0.1:27018,127.0.0.1:27019,127.0.0.1:27020/?replicaSet=rs0"'" >> ~/.zshrc
+echo "alias start:mongodb:rs1='/Users/$(whoami)/_INSTALL/mongo-rs1/init.sh'" >> ~/.zshrc
+echo "alias connect:mongodb:rs1='/Users/$(whoami)/_INSTALL/mongo-rs1/bin/mongo "mongodb://127.0.0.1:27021,127.0.0.1:27022,127.0.0.1:27023/?replicaSet=rs1"'" >> ~/.zshrc
+
+# Extracting installer to user's home folder
+cd /Users/wasimali/Downloads
+tar -xzf dev_tar.gz -C /Users/$(whoami)/
+
+# source the bash and zshrc file to current environment
+source ~/.zshrc
+
+# starting php service
+brew services start php@7.4
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+sudo mv composer.phar /usr/local/bin/composer
+
+# Installing mongodb and redis through pecl 
+Y | pecl install mongodb
+Y | pecl install redis
+
+# creating the link between files 
+ln -s /opt/homebrew/Cellar/pcre2/10.40/include/pcre2.h /opt/homebrew/Cellar/php@7.4/7.4.30/include/php/ext/pcre/php_pcre.h
+
+# Installing memcached for caching objects 
+pecl bundle memcached
+cd memcached
+
+#  preparing the build environment for a PHP extension.
+phpize
+
+yes | ./configure --with-zlib-dir=/opt/homebrew/Cellar/zlib/1.2.12
+
+# make command build and maintain groups of programs and files from the source code. 
+make
+
+# installs the program by copying the binaries as defined by ./configure 
+make install
+
+# Adding extension to php.ini file
+echo 'extension="memcached.so"'  >> /opt/homebrew/etc/php/7.4/php.ini
+
