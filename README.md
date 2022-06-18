@@ -72,6 +72,8 @@ STEP:-3 Building new docker image for click consumer using init.sh script
 Now, we build the click-consumer docker image by executing the script ./init.sh help2 (help2 is the new docker image name)
 As the script run the older image is deleted and a new image for click consumer is created with the name help2 as you can see in img5jpg.
 you can verify it by typing the cmd docker images ls and also on the GCP image registory. refer to img6.jpg
+<img width="758" alt="img5" src="https://user-images.githubusercontent.com/42905470/174434238-a940ac23-d99f-4523-9ce1-0574b460e2b2.png">
+<img width="947" alt="img6" src="https://user-images.githubusercontent.com/42905470/174434251-ecb07fea-5e60-43dc-9922-81e06e265ee9.png">
 
 
 STEP:- 4 Deploying click consumer on Kubernetes. 
@@ -79,3 +81,12 @@ STEP:- 4 Deploying click consumer on Kubernetes.
 The new docker image of click consumer is ready now. To deploy click consumer on Kubernetes
 Go to GCP->Kubernetes engine->workloads then click on kafka-clicks-deployment select rolling update on the action panel and change the name of the image with the new docker image name(help2) you have just created in step 3 and hit on update. refer img7
 The new kafka-click-consumer is deployed on Kubernetes using the newly created docker image. refer to img8.jpg
+<img width="1163" alt="img7" src="https://user-images.githubusercontent.com/42905470/174434273-6b759ddf-7494-4238-9019-12e7252e5476.png">
+
+<img width="1154" alt="img8" src="https://user-images.githubusercontent.com/42905470/174434278-7c90ad28-bd52-47d3-bd7b-6f95186f7716.png">
+
+
+<img width="758" alt="img5" src="https://user-images.githubusercontent.com/42905470/174434238-a940ac23-d99f-4523-9ce1-0574b460e2b2.png">
+<img width="947" alt="img6" src="https://user-images.githubusercontent.com/42905470/174434251-ecb07fea-5e60-43dc-9922-81e06e265ee9.png">
+<img width="1163" alt="img7" src="https://user-images.githubusercontent.com/42905470/174434273-6b759ddf-7494-4238-9019-12e7252e5476.png">
+<img width="1154" alt="img8" src="https://user-images.githubusercontent.com/42905470/174434278-7c90ad28-bd52-47d3-bd7b-6f95186f7716.png">
