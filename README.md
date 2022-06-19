@@ -32,17 +32,26 @@ Steps to follow To deploy click Tracker and Consumers manually on Kubernetes.
 
 STEP:- 1 General info
 
-To build the docker image we need Dockerfile and bash scripts for automating the task. The resources are found in the GitHub repo (github.com/trackier/streaming-mmp). refer img2.jpg <img width="1139" alt="img2" src="https://user-images.githubusercontent.com/42905470/174433288-c818d80f-394c-4ff7-afc0-168a84e67711.png">
+To build the docker image we need Dockerfile and bash scripts for automating the task. The resources are found in the GitHub repo (github.com/trackier/streaming-mmp). refer img2.jpg
+
+<img width="1139" alt="img2" src="https://user-images.githubusercontent.com/42905470/174433288-c818d80f-394c-4ff7-afc0-168a84e67711.png">
 
 
 
 STEP:- 2 Gathering resources.
 
 After login to the ansible server, We do git pull under directory /root/Kafka-consumer/streaming-mmp/ to build the new docker image for click consumer. After git pull You can see there is Dockerfile & init.sh file under the click consumer directory (/root/kafka-consumer/streaming-mmp/click/). The init.sh file is used for automating kafka consumers in mmp and Dockerfile building new kafka-consumer images refer img3 and img4.jpg
+
 <img width="765" alt="img3" src="https://user-images.githubusercontent.com/42905470/174433305-3d876e64-a8f4-4361-b01f-5d8f6e4197ab.png">
+img4
+<img width="632" alt="img4" src="https://user-images.githubusercontent.com/42905470/174434207-50fa31e7-4b96-4345-85a1-26ab332f1133.png">
 
 
-Explaining init.sh and Dockerfile commands
+
+Here is the Explaination of init.sh and Dockerfile commands
+
+
+--------###########--------
 
 init.sh 
 
@@ -53,26 +62,40 @@ eval "$(ssh-agent -s)" & ssh-add ~/.ssh/dev_readonly_cloudstuff_inc (this cmd st
 git pull                                            (pulling the git repo)
 
 cd /root/kafka-consumer/streaming-mmp/consumer/clickhouse/click (move to the clickhouse dir)
+
 rm click                                            (removing click file)
+
 /usr/local/go/bin/go mod tidy                       (download dependencies)
+
 /usr/local/go/bin/go build -x click.go              (build click.go)
+
 docker image | grep "kafka-consumer-click" | awk '{print $2 $3}' | cut -d " " -f 2 | xargs docker rmi (search kafka-consumer old docker image and deleting it )
+
 cd /root/kafka-consumer/                            (move to kafka-consumer dir)
+
 docker build -t eu.gcr.io..$1 -f click/Dockerfile . (building new docker image with name <eu.gcr.io.. >)
 
+--------###########--------
+
 Dockerfile
+
 FROM eu.gcr.io/trackier-mmp/go:1.17.8 
-COPY streaming-mmp /root/streaming-mmp (copying streaming-mmp directory to docker container under /root/)
-CMD ["bash","-c", "export PATH"]       (setting PATH variable)
+
+COPY streaming-mmp /root/streaming-mmp               (copying streaming-mmp directory to docker container under /root/)
+
+CMD ["bash","-c", "export PATH"]                     (setting PATH variable)
+
+--------###########--------
 
 
+STEP:-3 Building new docker image for click consumer using init.sh script.
 
-STEP:-3 Building new docker image for click consumer using init.sh script
+Now, we build the click-consumer docker image by executing the script ./init.sh help2 (help2 is the new docker image name).
+As the script run the older image is deleted and a new image for click consumer is created with the name help2 as you can see in img5.
+you can verify it by typing the command (docker images ls) and also on the GCP image registory. refer to img6
 
-Now, we build the click-consumer docker image by executing the script ./init.sh help2 (help2 is the new docker image name)
-As the script run the older image is deleted and a new image for click consumer is created with the name help2 as you can see in img5jpg.
-you can verify it by typing the cmd docker images ls and also on the GCP image registory. refer to img6.jpg
 <img width="758" alt="img5" src="https://user-images.githubusercontent.com/42905470/174434238-a940ac23-d99f-4523-9ce1-0574b460e2b2.png">
+img6
 <img width="947" alt="img6" src="https://user-images.githubusercontent.com/42905470/174434251-ecb07fea-5e60-43dc-9922-81e06e265ee9.png">
 
 
@@ -81,12 +104,7 @@ STEP:- 4 Deploying click consumer on Kubernetes.
 The new docker image of click consumer is ready now. To deploy click consumer on Kubernetes
 Go to GCP->Kubernetes engine->workloads then click on kafka-clicks-deployment select rolling update on the action panel and change the name of the image with the new docker image name(help2) you have just created in step 3 and hit on update. refer img7
 The new kafka-click-consumer is deployed on Kubernetes using the newly created docker image. refer to img8.jpg
+
 <img width="1163" alt="img7" src="https://user-images.githubusercontent.com/42905470/174434273-6b759ddf-7494-4238-9019-12e7252e5476.png">
-
-<img width="1154" alt="img8" src="https://user-images.githubusercontent.com/42905470/174434278-7c90ad28-bd52-47d3-bd7b-6f95186f7716.png">
-
-
-<img width="758" alt="img5" src="https://user-images.githubusercontent.com/42905470/174434238-a940ac23-d99f-4523-9ce1-0574b460e2b2.png">
-<img width="947" alt="img6" src="https://user-images.githubusercontent.com/42905470/174434251-ecb07fea-5e60-43dc-9922-81e06e265ee9.png">
-<img width="1163" alt="img7" src="https://user-images.githubusercontent.com/42905470/174434273-6b759ddf-7494-4238-9019-12e7252e5476.png">
+img8
 <img width="1154" alt="img8" src="https://user-images.githubusercontent.com/42905470/174434278-7c90ad28-bd52-47d3-bd7b-6f95186f7716.png">
