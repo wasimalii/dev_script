@@ -24,8 +24,12 @@ Read permission of Github repo.
 Ansible server for building docker images :
 To manually deploy the application and to perform the task we need a server/system on which required packages & applications are installed.
 Ansible server which is running on the GCP(Google cloud platform) refer to img1.jpg. This ansible server is used here for performing a task like building docker images and fetching repo from GitHub. When you log in to the server, Docker and git is already installed on the server & you can check it by typing the command (docker --version). The docker image that we build for deploying consumers on Kubernetes is build in this ansible server.
+
 To start the ansible server:-
-gcloud compute instances start ansible --project trackier-mmp --zone europe-west1-c<img width="687" alt="img1" src="https://user images.githubusercontent.com/42905470/174430878-2d33e794-9dab-49ca-8711-8f7db1f297dc.png">
+gcloud compute instances start ansible --project trackier-mmp --zone europe-west1-c
+
+<img width="687" alt="img1" src="https://user-images.githubusercontent.com/42905470/174430878-2d33e794-9dab-49ca-8711-8f7db1f297dc.png">
+
 
 
 Steps to follow To deploy click Tracker and Consumers manually on Kubernetes.
