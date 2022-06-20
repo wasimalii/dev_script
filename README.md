@@ -6,6 +6,7 @@ What it is?
 The documentation explains you how to manually deploy click tracker & consumers on Kubernetes cluster via docker image. Running Kafka consumers on Kubernetes enables organizations to simplify operations such as updates, restarts, and monitoring that are more or less integrated into the Kubernetes platform.
 
 Terms used:
+
 Kafka consumers:
 Kafka consumers are the subscribers responsible for reading records from one or more topics and one or more partitions of a topic from the Kafka server. Topic is a category/feed name to which records are stored and published. 
 
